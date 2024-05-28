@@ -34,16 +34,16 @@ jobs:
       tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
 
     steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - run: |
         git config --local --remove-section http."https://github.com/"
         git config --global url."https://jquinn99002:${GH_TOKEN}@github.com/JeffsterUk".insteadOf "https://github.com/JeffsterUk"
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v4
-
     # Install the latest version of the Terraform CLI
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
