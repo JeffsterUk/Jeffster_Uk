@@ -191,7 +191,7 @@ locals {
       {
         name                = "${local.globals.company_prefix}-${local.globals.environment}-HUB-APPGW-UKS-NSG-001"
         resource_group_name = "${local.globals.company_prefix}-${local.globals.environment}-HUB-CORE-NETWORK-UKS-RG"
-        rules = []
+        rules               = []
       }
     ]
 
@@ -211,6 +211,6 @@ locals {
       "privatelink.agentsvc.azure-automation.net",
       "privatelink.blob.core.windows.net",
       "privatelink.vaultcore.azure.net"
-    ]   
+    ]
   }
 }

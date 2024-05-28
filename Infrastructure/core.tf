@@ -1,7 +1,7 @@
 module "resource_groups" {
   #source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_resource_group"
   #source = "github.com/hashicorp/example"
-  source = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_resource_group"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_resource_group"
   for_each = toset(local.all.resource_groups)
 
   name     = each.key
@@ -88,18 +88,18 @@ module "private_dns_zones" {
 
   name                = each.key
   resource_group_name = "JFSTR-PROD-HUB-CORE-NETWORK-UKS-RG"
-  virtual_networks    = [
+  virtual_networks = [
     {
       name                = "JFSTR-PROD-HUB-CORE-UKS-VNET-001"
       resource_group_name = "JFSTR-PROD-HUB-CORE-NETWORK-UKS-RG"
     }
   ]
-  tags                = local.globals.tags
+  tags = local.globals.tags
 }
 
 module "log_analytics_workspaces" {
-  source    = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_log_analytics_workspace"
-  for_each  = { for law in local.all.log_analytics_workspaces : law.name => law }
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_log_analytics_workspace"
+  for_each = { for law in local.all.log_analytics_workspaces : law.name => law }
 
   name                = each.value.name
   location            = local.globals.region
@@ -130,7 +130,7 @@ resource "azurerm_private_endpoint" "management" {
   }
 
   private_dns_zone_group {
-    name                 = "default"
+    name = "default"
     private_dns_zone_ids = [
       for pdnsz in [
         "privatelink.monitor.azure.com",
@@ -144,11 +144,11 @@ resource "azurerm_private_endpoint" "management" {
 }
 
 # module "key_vaults" {
-  
+
 # }
 
 # module "storage_accounts" {
-  
+
 # }
 
 # module "private_dns_a_record" {
