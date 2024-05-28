@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
     - main
+  workflow_dispatch:
 
 #Special permissions required for OIDC authentication
 permissions:
