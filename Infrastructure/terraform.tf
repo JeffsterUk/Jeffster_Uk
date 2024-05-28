@@ -1,5 +1,11 @@
 terraform {
-  backend "local" {}
+  backend "azurerm" {
+    resource_group_name  = "tfstate-rsg"
+    storage_account_name = "jqtempsa"
+    container_name       = "tfstate"
+    key                  = "jeffsteruk.tfstate"
+    use_oidc             = true
+  }
 }
 
 provider "azurerm" {
