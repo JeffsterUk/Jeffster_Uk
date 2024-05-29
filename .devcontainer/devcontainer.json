@@ -1,22 +1,25 @@
 {
-    "name": "terraform-codespaces",
-    "customizations": {
-      "vscode/settings": {
-        "terminal.integrated.shell.linux": "/bin/zsh"
-      },
-      "vscode/extensions": [
-        "eamodio.gitlens",
-        "davidanson.vscode-markdownlint",
-        "hashicorp.terraform",
-        "ms-azuretools.vscode-docker"
-      ],
-      "codespaces": {
-        "repositories": {
-          "JeffsterUk/Terraform_Modules": {
-            "permissions": "write-all"
-          }
+  "name": "terraform-codespaces",
+  "features": {
+    "ghcr.io/devcontainers/features/azure-cli:1": {}
+  },
+  "customizations": {
+    "vscode/settings": {
+      "terminal.integrated.shell.linux": "/bin/zsh"
+    },
+    "vscode/extensions": [
+      "eamodio.gitlens",
+      "davidanson.vscode-markdownlint",
+      "hashicorp.terraform",
+      "ms-azuretools.vscode-docker"
+    ],
+    "codespaces": {
+      "repositories": {
+        "JeffsterUk/Terraform_Modules": {
+          "permissions": "write-all"
         }
       }
-    },
-    "postCreateCommand": "/bin/bash ./.devcontainer/post-install.sh"
-  }
+    }
+  },
+  "postCreateCommand": "/bin/bash ./.devcontainer/post-install.sh"
+}
