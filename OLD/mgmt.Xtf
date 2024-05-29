@@ -1,0 +1,172 @@
+
+# Not available on Internal Mode
+resource "azurerm_api_management" "management" {
+  name                = "management-apim-12542154"
+  location            = azurerm_resource_group.management.location
+  resource_group_name = azurerm_resource_group.management.name
+  publisher_name      = "Jeffster"
+  publisher_email     = "james.quinn@jeffster.uk"
+  sku_name = "Developer_1"
+  identity {
+    type         = "SystemAssigned"
+  }
+  hostname_configuration {
+    management {
+      host_name = "apim-management.privatelink.jeffster.uk"
+      key_vault_id = "https://managementkv12542154.vault.azure.net/secrets/jeffster-uk"
+    }
+    portal {
+      host_name = "apim-portal.privatelink.jeffster.uk"
+      key_vault_id = "https://managementkv12542154.vault.azure.net/secrets/jeffster-uk"      
+    }
+    developer_portal {
+      host_name = "apim-developer.privatelink.jeffster.uk"
+      key_vault_id = "https://managementkv12542154.vault.azure.net/secrets/jeffster-uk"      
+    }
+    scm {
+      host_name = "apim-scm.privatelink.jeffster.uk"
+      key_vault_id = "https://managementkv12542154.vault.azure.net/secrets/jeffster-uk"      
+    }
+    proxy {
+      host_name = "management-apim-12542154.azure-api.net"
+      # key_vault_id = "https://managementkv12542154.vault.azure.net/secrets/jeffster-uk"
+    }
+    proxy {
+      host_name = "apim.privatelink.jeffster.uk"
+      key_vault_id = "https://managementkv12542154.vault.azure.net/secrets/jeffster-uk"
+    }
+  }
+}
+
+locals {
+  apim_private_dns_a_records = [
+    "apim-management",
+    "apim-portal",
+    "apim-developer",
+    "apim-scm",
+    "apim"
+  ]
+}
+
+resource "azurerm_private_dns_a_record" "management-apim" {
+  for_each            = toset(local.apim_private_dns_a_records)
+  name                = each.value
+  zone_name           = "privatelink.jeffster.uk"
+  resource_group_name = azurerm_resource_group.management.name
+  ttl                 = 300
+  records             = ["10.0.2.4"]
+}
+
+#######################################################################
+#                         Application Gateway                         #
+#######################################################################
+resource "azurerm_public_ip" "management_appgw" {
+  name                = "management-appgw-pip"
+  location            = azurerm_resource_group.management.location
+  resource_group_name = azurerm_resource_group.management.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  domain_name_label   = "management-appgw-pip"
+
+  tags = {
+    environment = "Production"
+  }
+}
+
+locals {
+  backend_address_pool_name      = "management-appgw-beap"
+  frontend_port_name             = "management-appgw-feport"
+  frontend_ip_configuration_name = "management-appgw-feip"
+  http_setting_name              = "management-appgw-be-htst"
+  listener_name                  = "management-appgw-httplstn"
+  request_routing_rule_name      = "management-appgw-rqrt"
+  redirect_configuration_name    = "management-appgw-rdrcfg"
+}
+
+resource "azurerm_application_gateway" "management" {
+  name                = "management-appgw"
+  location            = azurerm_resource_group.management.location
+  resource_group_name = azurerm_resource_group.management.name
+  enable_http2        = true
+
+  identity {
+    type = "UserAssigned"
+    identity_ids = ["/subscriptions/87f34df8-a283-4f56-bc04-6a5e214d516d/resourceGroups/management-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/management-umi"]
+  }
+
+  sku {
+    name     = "Standard_v2"
+    tier     = "Standard_v2"
+    capacity = 1
+  }
+
+  ssl_certificate {
+    name                = "jeffster-uk"
+    key_vault_secret_id = "https://managementkv12542154.vault.azure.net/secrets/jeffster-uk"
+  }
+
+  gateway_ip_configuration {
+    name      = "my-gateway-ip-configuration"
+    subnet_id = (azurerm_virtual_network.management.subnet[*].id)[2]
+  }
+
+  frontend_port {
+    name = local.frontend_port_name
+    port = 443
+  }
+
+  frontend_ip_configuration {
+    name                 = local.frontend_ip_configuration_name
+    public_ip_address_id = azurerm_public_ip.management_appgw.id
+  }
+
+  backend_address_pool {
+    name = local.backend_address_pool_name
+    fqdns = ["apim.privatelink.jeffster.uk"]
+  }
+
+  backend_http_settings {
+    name                  = local.http_setting_name
+    cookie_based_affinity = "Disabled"
+    path                  = "/"
+    port                  = 443
+    protocol              = "Https"
+    request_timeout       = 20
+    probe_name            = "management-appgw-probe"
+    pick_host_name_from_backend_address = true
+  }
+
+  http_listener {
+    name                           = local.listener_name
+    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = local.frontend_port_name
+    protocol                       = "Https"
+    ssl_certificate_name           = "jeffster-uk"
+  }
+
+  request_routing_rule {
+    name                       = local.request_routing_rule_name
+    priority                   = 9
+    rule_type                  = "Basic"
+    http_listener_name         = local.listener_name
+    backend_address_pool_name  = local.backend_address_pool_name
+    backend_http_settings_name = local.http_setting_name
+  }
+
+  probe {
+    interval                                  = 30
+    minimum_servers                           = 0
+    name                                      = "management-appgw-probe"
+    path                                      = "/status-0123456789abcdef"
+    pick_host_name_from_backend_http_settings = true
+    port                                      = 443
+    protocol                                  = "Https"
+    timeout                                   = 120
+    unhealthy_threshold                       = 8
+    match {
+    status_code = [
+      "200-399",
+      ]
+    }
+  }
+}
