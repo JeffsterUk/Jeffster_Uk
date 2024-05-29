@@ -12,7 +12,7 @@
       ],
       "codespaces": {
         "repositories": {
-          "Jeffster_Uk/Terraform_Modules": {
+          "JeffsterUk/Terraform_Modules": {
             "permissions": "write-all"
           }
         }
