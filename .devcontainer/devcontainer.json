@@ -1,7 +1,11 @@
 {
   "name": "terraform-codespaces",
   "features": {
-    "ghcr.io/devcontainers/features/azure-cli:1": {}
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "installTFsec": true,
+      "installTerraformDocs": true
+    }
   },
   "customizations": {
     "vscode/settings": {
@@ -20,6 +24,5 @@
         }
       }
     }
-  },
-  "postCreateCommand": "/bin/bash ./.devcontainer/post-install.sh"
+  }
 }
