@@ -14,6 +14,12 @@ module "azure_monitor_private_link_scope" {
       if contains( local.mgt.azure_monitor_private_link_scope.private_endpoint.private_dns_zones, pdnsz.name)
     ]
   }
+  scoped_services = [ for law in local.mgt.log_analytics_workspaces : 
+    {
+      name = law.name
+      id   = module.log_analytics_workspaces[law.name].log_analytics_workspace_id
+    } 
+  ]
   tags = local.globals.tags
 }
 
