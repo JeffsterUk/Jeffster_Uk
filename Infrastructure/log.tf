@@ -1,5 +1,5 @@
 module "azure_monitor_private_link_scope" {
-  source = "../../Terraform_Modules/Modules/azurerm_monitor_private_link_scope"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_monitor_private_link_scope"
 
   name                = local.mgt.azure_monitor_private_link_scope.name
   resource_group_name = local.mgt.azure_monitor_private_link_scope.resource_group_name
@@ -24,7 +24,7 @@ module "azure_monitor_private_link_scope" {
 }
 
 module "log_analytics_workspaces" {
-  source   = "../../Terraform_Modules/Modules/azurerm_log_analytics_workspace"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_log_analytics_workspace"
   for_each = { for law in local.mgt.log_analytics_workspaces : law.name => law }
 
   name                = each.value.name

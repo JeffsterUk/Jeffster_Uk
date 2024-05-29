@@ -1,6 +1,5 @@
 module "resource_groups" {
-  # source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_resource_group"
-  source   = "../../Terraform_Modules/Modules/azurerm_resource_group"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_resource_group"
   for_each = toset( concat( local.hub.resource_groups, local.mgt.resource_groups ) )
 
   name     = each.key
@@ -9,8 +8,7 @@ module "resource_groups" {
 }
 
 module "network_security_groups" {
-  # source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_nsg"
-  source   = "../../Terraform_Modules/Modules/azurerm_nsg"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_nsg"
   for_each = { for nsg in concat( local.hub.network_security_groups, local.mgt.network_security_groups ) : nsg.name => nsg }
 
   name                       = each.key
@@ -23,8 +21,7 @@ module "network_security_groups" {
 }
 
 module "route_tables" {
-  # source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_route"
-  source   = "../../Terraform_Modules/Modules/azurerm_route"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_route"
   for_each = { for route_table in concat( local.hub.route_tables, local.mgt.route_tables ) : route_table.name => route_table }
 
   route_table_name    = each.key
@@ -35,8 +32,7 @@ module "route_tables" {
 }
 
 module "virtual_networks" {
-  # source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_vnet"
-  source   = "../../Terraform_Modules/Modules/azurerm_vnet"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_vnet"
   for_each = { for virtual_network in concat( local.hub.virtual_networks, local.mgt.virtual_networks ) : virtual_network.name => virtual_network }
 
   name                       = each.key
@@ -50,7 +46,7 @@ module "virtual_networks" {
 }
 
 module "subnets" {
-  source = "../../Terraform_Modules/Modules/azurerm_subnet"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_subnet"
   for_each = merge(flatten([
     for virtual_network in concat( local.hub.virtual_networks, local.mgt.virtual_networks ) : merge({
       for subnet in virtual_network.subnets : "${virtual_network.name}\\${subnet.name}" => {
@@ -83,7 +79,7 @@ module "subnets" {
 }
 
 module "virtual_network_peering" {
-  source    = "../../Terraform_Modules/Modules/azurerm_virtual_network_peering"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_virtual_network_peering"
   providers = { azurerm.hub_subscription = azurerm }
   for_each  = { for virtual_network_peering in local.hub.virtual_network_peerings : virtual_network_peering.id => virtual_network_peering }
 
@@ -105,7 +101,7 @@ module "virtual_network_peering" {
 }
 
 module "private_dns_zones" {
-  source = "../../Terraform_Modules/Modules/azurerm_private_dns_zone"
+  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_private_dns_zone"
   providers = { azurerm.hub_subscription = azurerm }
   for_each  = toset( local.hub.private_dns.zones )
 
