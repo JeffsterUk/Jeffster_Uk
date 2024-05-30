@@ -160,6 +160,6 @@ jobs:
       with:
         name: tfplan
 
-    # # Terraform Apply
-    # - name: Terraform Apply
-    #   run: terraform apply -auto-approve tfplan
+    # Terraform Apply
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
