@@ -1,6 +1,9 @@
 {
   "name": "terraform-codespaces",
   "features": {
+    "ghcr.io/devcontainers/features/powershell:1": {
+      "modules": ["Az"]
+    },
     "ghcr.io/devcontainers/features/azure-cli:1": {},
     "ghcr.io/devcontainers/features/terraform:1": {
       "installTFsec": true,
@@ -13,7 +16,8 @@
     },
     "vscode/extensions": [
       "eamodio.gitlens",
-      "davidanson.vscode-markdownlint"
+      "davidanson.vscode-markdownlint",
+      "ms-vsliveshare.vsliveshare"
     ],
     "codespaces": {
       "repositories": {
@@ -23,5 +27,5 @@
       }
     }
   },
-  "postCreateCommand": "bash clone-repos.sh"
+  "postCreateCommand": "bash ./.devcontainer/clone-repos.sh"
 }
