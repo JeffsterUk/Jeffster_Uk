@@ -13,9 +13,7 @@
     },
     "vscode/extensions": [
       "eamodio.gitlens",
-      "davidanson.vscode-markdownlint",
-      "hashicorp.terraform",
-      "ms-azuretools.vscode-docker"
+      "davidanson.vscode-markdownlint"
     ],
     "codespaces": {
       "repositories": {
@@ -24,5 +22,6 @@
         }
       }
     }
-  }
+  },
+  "postCreateCommand": "bash clone-repos.sh"
 }
