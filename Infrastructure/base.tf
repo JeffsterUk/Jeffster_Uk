@@ -1,6 +1,6 @@
 module "resource_groups" {
   source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_resource_group"
-  for_each = toset( concat( local.hub.resource_groups, local.mgt.resource_groups ) )
+  for_each = toset(concat(local.hub.resource_groups, local.mgt.resource_groups))
 
   name     = each.key
   location = local.globals.location
@@ -9,7 +9,7 @@ module "resource_groups" {
 
 module "network_security_groups" {
   source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_nsg"
-  for_each = { for nsg in concat( local.hub.network_security_groups, local.mgt.network_security_groups ) : nsg.name => nsg }
+  for_each = { for nsg in concat(local.hub.network_security_groups, local.mgt.network_security_groups) : nsg.name => nsg }
 
   name                       = each.key
   resource_group_name        = module.resource_groups[each.value.resource_group_name].name
@@ -22,7 +22,7 @@ module "network_security_groups" {
 
 module "route_tables" {
   source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_route"
-  for_each = { for route_table in concat( local.hub.route_tables, local.mgt.route_tables ) : route_table.name => route_table }
+  for_each = { for route_table in concat(local.hub.route_tables, local.mgt.route_tables) : route_table.name => route_table }
 
   route_table_name    = each.key
   resource_group_name = module.resource_groups[each.value.resource_group_name].name
@@ -33,7 +33,7 @@ module "route_tables" {
 
 module "virtual_networks" {
   source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_vnet"
-  for_each = { for virtual_network in concat( local.hub.virtual_networks, local.mgt.virtual_networks ) : virtual_network.name => virtual_network }
+  for_each = { for virtual_network in concat(local.hub.virtual_networks, local.mgt.virtual_networks) : virtual_network.name => virtual_network }
 
   name                       = each.key
   resource_group_name        = module.resource_groups[each.value.resource_group_name].name
@@ -46,9 +46,9 @@ module "virtual_networks" {
 }
 
 module "subnets" {
-  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_subnet"
+  source = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_subnet"
   for_each = merge(flatten([
-    for virtual_network in concat( local.hub.virtual_networks, local.mgt.virtual_networks ) : merge({
+    for virtual_network in concat(local.hub.virtual_networks, local.mgt.virtual_networks) : merge({
       for subnet in virtual_network.subnets : "${virtual_network.name}\\${subnet.name}" => {
         name                   = subnet.name
         virtual_network        = virtual_network.name
@@ -79,7 +79,7 @@ module "subnets" {
 }
 
 module "virtual_network_peering" {
-  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_virtual_network_peering"
+  source    = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_virtual_network_peering"
   providers = { azurerm.hub_subscription = azurerm }
   for_each  = { for virtual_network_peering in local.hub.virtual_network_peerings : virtual_network_peering.id => virtual_network_peering }
 
@@ -97,17 +97,17 @@ module "virtual_network_peering" {
   spoke_virtual_network_name                = each.value.spoke_virtual_network_name
   spoke_use_remote_gateways                 = each.value.spoke_use_remote_gateways
   spoke_subscription_id                     = each.value.hub_subscription_id
-  depends_on = [module.virtual_networks]
+  depends_on                                = [module.virtual_networks]
 }
 
 module "private_dns_zones" {
-  source   = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_private_dns_zone"
+  source    = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_private_dns_zone"
   providers = { azurerm.hub_subscription = azurerm }
-  for_each  = toset( local.hub.private_dns.zones )
+  for_each  = toset(local.hub.private_dns.zones)
 
   name                = each.value
   resource_group_name = local.hub.private_dns.resource_group_name
   virtual_networks    = local.hub.private_dns.virtual_network_links
   tags                = local.globals.tags
-  depends_on          = [ module.virtual_networks ]
+  depends_on          = [module.virtual_networks]
 }

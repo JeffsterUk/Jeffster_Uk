@@ -2,14 +2,14 @@ locals {
   hub = {
     resource_groups = [
       "jfstr-hub-network-uks-rg",
-      "jfstr-hub-privatedns-uks-rg"      
+      "jfstr-hub-privatedns-uks-rg"
     ]
 
     network_security_groups = [
       {
         name                = "jfstr-hub-default-uks-nsg-001"
         resource_group_name = "jfstr-hub-network-uks-rg"
-        rules = []
+        rules               = []
       },
       {
         name                = "jfstr-hub-appgw-uks-nsg-001"
@@ -77,16 +77,16 @@ locals {
         }
       ]
       zones = [
-      "privatelink.jeffster.uk",
-      "privatelink.monitor.azure.com",
-      "privatelink.oms.opinsights.azure.com",
-      "privatelink.ods.opinsights.azure.com",
-      "privatelink.agentsvc.azure-automation.net",
-      "privatelink.blob.core.windows.net",
-      "privatelink.vaultcore.azure.net",
-      "privatelink.queue.core.windows.net",
-      "privatelink.table.core.windows.net",
-      "privatelink.file.core.windows.net"
+        "privatelink.jeffster.uk",
+        "privatelink.monitor.azure.com",
+        "privatelink.oms.opinsights.azure.com",
+        "privatelink.ods.opinsights.azure.com",
+        "privatelink.agentsvc.azure-automation.net",
+        "privatelink.blob.core.windows.net",
+        "privatelink.vaultcore.azure.net",
+        "privatelink.queue.core.windows.net",
+        "privatelink.table.core.windows.net",
+        "privatelink.file.core.windows.net"
       ]
     }
 

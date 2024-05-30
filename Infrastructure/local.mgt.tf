@@ -15,7 +15,7 @@ locals {
       {
         name                = "jfstr-mgt-apim-uks-nsg-001"
         resource_group_name = "jfstr-mgt-network-uks-rg"
-        rules               = [
+        rules = [
           {
             name                         = "in-apim-3443"
             description                  = "Management endpoint for Azure portal and PowerShell"
@@ -96,7 +96,7 @@ locals {
         routes              = []
       }
     ]
-    
+
     virtual_networks = [
       {
         name                = "jfstr-mgt-core-uks-vnet-001"
@@ -118,28 +118,28 @@ locals {
           }
         ]
       }
-    ]   
+    ]
 
     storage_accounts = [
       {
-        name                            = "jfstrmgttfstateukssa001"
-        resource_group_name             = "jfstr-mgt-terraform-uks-rg"
-        account_tier                    = "Standard"
-        account_replication             = "LRS"
+        name                = "jfstrmgttfstateukssa001"
+        resource_group_name = "jfstr-mgt-terraform-uks-rg"
+        account_tier        = "Standard"
+        account_replication = "LRS"
         network_rules = {
           default_action = "Deny"
         }
         private_endpoint_subnet = "jfstr-mgt-core-uks-vnet-001\\private-endpoints-snet"
       }
     ]
-    
+
     azure_monitor_private_link_scope = {
       name                = "jfstr-mgt-core-uks-ampls"
       resource_group_name = "jfstr-mgt-log-uks-rg"
       private_endpoint = {
-        name     = "jfstr-mgt-core-uks-ampls-pe-001"
-        private_endpoint_subnet = "jfstr-mgt-core-uks-vnet-001\\private-endpoints-snet"
-        custom_network_interface_name = "jfstr-mgt-core-uks-ampls-nic-001"
+        name                            = "jfstr-mgt-core-uks-ampls-pe-001"
+        private_endpoint_subnet         = "jfstr-mgt-core-uks-vnet-001\\private-endpoints-snet"
+        custom_network_interface_name   = "jfstr-mgt-core-uks-ampls-nic-001"
         private_service_connection_name = "jfstr-mgt-core-uks-psc-pe-001"
         private_dns_zones = [
           "privatelink.monitor.azure.com",
