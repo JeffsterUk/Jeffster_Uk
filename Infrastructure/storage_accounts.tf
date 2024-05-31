@@ -1,5 +1,5 @@
 module "storage_accounts" {
-  source    = "github.com/JeffsterUk/Terraform_Modules/Modules/azure_storage_account"
+  source    = "../../Terraform_Modules/Modules/azure_storage_account"
   providers = { azurerm.hub_subscription = azurerm }
   for_each  = { for storage_account in concat(local.hub.storage_accounts, local.mgt.storage_accounts) : storage_account.name => storage_account }
 

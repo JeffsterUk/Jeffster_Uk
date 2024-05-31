@@ -101,7 +101,7 @@ module "virtual_network_peering" {
 }
 
 module "private_dns_zones" {
-  source    = "github.com/JeffsterUk/Terraform_Modules/Modules/azure_private_dns_zone"
+  source    = "../../Terraform_Modules/Modules/azure_private_dns_zone"
   providers = { azurerm.hub_subscription = azurerm }
   for_each  = toset(local.hub.private_dns.zones)
 
