@@ -101,13 +101,16 @@ module "virtual_network_peering" {
 }
 
 module "private_dns_zones" {
-  source    = "github.com/JeffsterUk/Terraform_Modules/Modules/azurerm_private_dns_zone"
+  source    = "github.com/JeffsterUk/Terraform_Modules/Modules/azure_private_dns_zone"
   providers = { azurerm.hub_subscription = azurerm }
   for_each  = toset(local.hub.private_dns.zones)
 
   name                = each.value
   resource_group_name = local.hub.private_dns.resource_group_name
-  virtual_networks    = local.hub.private_dns.virtual_network_links
-  tags                = local.globals.tags
-  depends_on          = [module.virtual_networks]
+  virtual_network_links = [{
+    name               = local.hub.private_dns.virtual_network_links.name
+    virtual_network_id = module.virtual_networks[local.hub.private_dns.virtual_network_links.name].vnet_id
+  }]
+  tags       = local.globals.tags
+  depends_on = [module.virtual_networks]
 }

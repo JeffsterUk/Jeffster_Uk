@@ -3,8 +3,7 @@ locals {
     resource_groups = [
       "jfstr-mgt-network-uks-rg",
       "jfstr-mgt-log-uks-rg",
-      "jfstr-mgt-terraform-uks-rg",
-      "jfstr-mgt-tempdeploy-uks-rg"
+      "jfstr-mgt-terraform-uks-rg"
     ]
 
     network_security_groups = [

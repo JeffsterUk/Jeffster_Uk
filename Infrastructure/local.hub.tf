@@ -70,12 +70,9 @@ locals {
 
     private_dns = {
       resource_group_name = "jfstr-hub-privatedns-uks-rg"
-      virtual_network_links = [
-        {
-          name                = "jfstr-hub-core-uks-vnet-001"
-          resource_group_name = "jfstr-hub-network-uks-rg"
-        }
-      ]
+      virtual_network_links = {
+        name = "jfstr-hub-core-uks-vnet-001"
+      }
       zones = [
         "privatelink.jeffster.uk",
         "privatelink.monitor.azure.com",
